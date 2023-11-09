@@ -8,7 +8,7 @@ route.post("/register", async (req, res) => {
 
   if(userLogin) {
     return res.send({
-      status: "success",
+      status: "failed",
       title: "Register was failed",
       message: "Your username is already registered",
     })
