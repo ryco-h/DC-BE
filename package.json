@@ -1,6 +1,7 @@
 {
   "name": "dc-backend",
   "version": "1.0.0",
+  "homepage": "/",
   "description": "Backend for DC-clone",
   "scripts": {
     "start": "nodemon index.js"

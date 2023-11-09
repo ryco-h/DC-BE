@@ -4,6 +4,16 @@ const route = require("express").Router()
 
 route.post("/register", async (req, res) => {
 
+  const userLogin = await UserCollection.findOne({username: req.body.username})
+
+  if(userLogin) {
+    return res.send({
+      status: "success",
+      title: "Register was failed",
+      message: "Your username is already registered",
+    })
+  }
+
   const user = await UserCollection.create({
     username: req.body.username,
     password: req.body.password,
@@ -22,12 +32,16 @@ route.post("/register", async (req, res) => {
 route.post("/login", async (req, res) => {
   
   const userLogin = await UserCollection.findOne({username: req.body.username})
-
-  if(userLogin.password === req.body.password) {
+  
+  if(!userLogin) {
+    return res.send({
+      status: "failed",
+      title: "Failed to login",
+      message: "Username or password incorrect",
+    })
+  } else if (userLogin.password === req.body.password) {
     userLogin.token = generateRandomToken()
     await userLogin.save()
-
-    console.log(req.io)
 
     req.io.sockets.emit(
       'login',
@@ -35,17 +49,13 @@ route.post("/login", async (req, res) => {
         message: `Someone has logged in!`,
         content: userLogin.username
       }
-   );
+    );
 
-    res.send({
+    return res.send({
       status: "success",
-      message: "Login was successful",
+      title: "Login was successful",
+      message: "Welcome to TransChat",
       token: userLogin.token
-    })
-  } else {
-    res.send({
-      status: "failed",
-      message: "Login was failed"
     })
   }
 })

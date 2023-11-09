@@ -2,9 +2,7 @@ const route = require("express").Router()
 
 route.get("/", async (req, res) => {
 
-  res.io.sockets.emit("home", {
-    message: "Connected to home"
-  })
+  res.send("N word")
 })
 
 module.exports = route

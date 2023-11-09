@@ -15,8 +15,8 @@ const listClient = new Set()
 
 io.on('connection', (socket) => {
   listClient.add(socket.handshake.address)
-  console.log('A client is connected');
-  socket.send("Welcome brudah")
+  socket.broadcast.emit("message", 'A client is connected');
+  socket.send("Welcome to TransChat")
 });
 
 // Middleware
