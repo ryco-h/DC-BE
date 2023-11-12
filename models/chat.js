@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const ChatCollectionSchema = new mongoose.Schema({
   sender: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user'
+    ref: 'user_collection'
   },
   tags: Array,
   datetime: Date

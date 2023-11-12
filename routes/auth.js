@@ -33,9 +33,9 @@ route.post("/login", async (req, res) => {
   
   const userLogin = await UserCollection.findOne({username: req.body.username})
   
-  if(!userLogin) {
+  if(!userLogin || userLogin.password !== req.body.password) {
     return res.send({
-      status: "failed",
+      status: "error",
       title: "Failed to login",
       message: "Username or password incorrect",
     })
@@ -43,19 +43,22 @@ route.post("/login", async (req, res) => {
     userLogin.token = generateRandomToken()
     await userLogin.save()
 
-    req.io.sockets.emit(
-      'login',
-      {
-        message: `Someone has logged in!`,
-        content: userLogin.username
-      }
-    );
+    // Get the socket associated with the user's ID
+    req.io.sockets.emit("authentication", {
+      type: "onLoginSuccess",
+      command: "Send ID to socket",
+      id: userLogin.id
+    });
 
     return res.send({
       status: "success",
       title: "Login was successful",
       message: "Welcome to TransChat",
-      token: userLogin.token
+      info: {
+        id: userLogin._id,
+        username: userLogin.username,
+        token: userLogin.token
+      }
     })
   }
 })
